@@ -1,6 +1,6 @@
 # HLK-W801-KIT
 
-The **HLK-W801-KIT** (Hi-Link / 海凌科 W801 development kit) is a full-featured
+The **HLK-W801-KIT** (Hi-Link / 海凌�?W801 development kit) is a full-featured
 wireless board built around the **WinnerMicro W801** SoC. Unlike the
 MCU-only Air101/W800-nano, the W801's **Wi-Fi/BLE RF is populated**, and the
 W801 exposes **more GPIOs** (43 I/O) in its larger QFN56 package.
@@ -12,14 +12,14 @@ W801 exposes **more GPIOs** (43 I/O) in its larger QFN56 package.
 | SoC | WinnerMicro W801 (QFN56, 6×6 mm) |
 | CPU | 32-bit C-SKY XT804, up to **240 MHz** (`-mcpu=ck804ef`) |
 | Memory | 2 MB SPI flash, 288 KB RAM |
-| Wireless | **Wi-Fi 4 (802.11 b/g/n) + BLE 4.2 — populated** |
+| Wireless | **Wi-Fi 4 (802.11 b/g/n) + BLE 4.2 �?populated** |
 | GPIOs | 43 (PA0-15, PB0-27 minus PB23) |
 | USB bridge | CH340 (Type-C), **115200 8N1** |
 | Console | UART0 on PB19(TX) / PB20(RX) |
 | Download mode | CH340 DTR/RTS auto-reset into W80x secboot, XMODEM (`wm.py flash`) |
 | LEDs | **7 on-board LEDs, all LOW-active** |
 
-## Memory (RAM) — full 288 KB is usable in pure C
+## Memory (RAM) �?full 288 KB is usable in pure C
 
 Same W80x silicon as the W800: **288 KB RAM** = **160 KB SRAM**
 (`0x20000000`) + **128 KB DRAM** (`0x20028000`), both exposed to the C heap
@@ -108,6 +108,18 @@ Connected successfully
 
 Every build must run with the CLI compile suite's tools on `PATH` so that
 `cmake`, `ninja`, `python` and the C-SKY toolchain resolve correctly.
+
+**Quick way (bash / Git Bash / MSYS):**
+
+```bash
+cd hlk-w801-kit/blink_hello
+../../build.sh build                 # configure + build
+../../build.sh flash -p COM36         # build + flash APP ONLY (fast)
+../../build.sh flash-full -p COM36    # build + FULL flash (pt + bootloader + app)
+../../build.sh monitor -p COM36      # serial monitor
+```
+
+**Manual way (PowerShell):**
 
 ```powershell
 # 1. Prepare the environment (once per shell)

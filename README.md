@@ -9,16 +9,42 @@ projects that run on it.
 
 ## Boards
 
-| Board | Directory | SoC | CPU | Wireless |
-|-------|-----------|-----|-----|----------|
-| W800-nano (Air101-nano) | [`w800-nano/`](w800-nano/) | W800 (C-SKY XT804) | up to 240 MHz | none (RF not populated) |
-| HLK-W801-KIT | [`hlk-w801-kit/`](hlk-w801-kit/) | W801 (C-SKY XT804) | up to 240 MHz | WiFi 4 + BLE 4.2 |
+| Board | Directory | SoC | CPU | Wireless | Flash |
+|-------|-----------|-----|-----|----------|-------|
+| W800-nano (Air101-nano) | [`w800-nano/`](w800-nano/) | W800 (C-SKY XT804) | up to 240 MHz | none (RF not populated) | 2 MB |
+| HLK-W801-KIT | [`hlk-w801-kit/`](hlk-w801-kit/) | W801 (C-SKY XT804) | up to 240 MHz | WiFi 4 + BLE 4.2 | 2 MB |
+| W806-nano (Air103-nano) | [`w806-nano/`](w806-nano/) | W806 / Air103 (C-SKY XT804) | up to 240 MHz | none (no RF) | **1 MB** |
+| HLK-W806-KIT | [`hlk-w806-kit/`](hlk-w806-kit/) | W806-C200 (C-SKY XT804) | up to 240 MHz | none (no RF) | **1 MB** |
 
 ## Projects
 
 Each board directory contains the projects built for that board. See the
 board's `README.md` for details on building, flashing and expected output.
 
-> The W800-nano / Air101-nano is an **MCU-only** board (no RF populated). The
-> HLK-W801-KIT has the **full wireless stack** populated, so it is the board to
-> use for Wi-Fi / BLE work.
+## Building
+
+`build.sh` (repo root) is a bash helper for **Git Bash / MSYS / Cygwin** that
+sets up the WinnerMicro CLI environment and forwards to `wm.py`. Run it from
+inside a project directory:
+
+```bash
+cd w806-nano/blink_hello
+../../build.sh build                 # configure + build
+../../build.sh flash -p COM36        # build + flash APP ONLY (fast)
+../../build.sh flash-full -p COM36   # build + FULL flash (partition table + bootloader + app)
+../../build.sh monitor -p COM36      # serial monitor
+```
+
+The bootloader and partition table are fixed SDK artifacts (byte-identical
+across all projects and boards), so `flash` sends only the app image by
+default. Use `flash-full` after putting a fresh board on the bench or after an
+SDK update. An explicit `-n`/`--name` argument overrides the app-only default.
+
+See each board's `README.md` for the full manual environment setup and the
+exact COM port / flashing notes.
+
+> Wireless summary: the **HLK-W801-KIT** is the only board with the RF stack
+> populated (use it for Wi-Fi / BLE). The W800-nano, W806-nano and
+> HLK-W806-KIT are MCU-only. The two W806 boards have only **1 MB flash**, so
+> their projects use a custom partition table (`partition_table_custom.csv`)
+> to fit inside 1 MB.
