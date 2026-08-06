@@ -64,6 +64,27 @@ So a normal flash session is: *start the command → wait for
 > The board does **not** auto-reset into the app after flashing, so for a
 > clean boot log (frequency, etc.) press **RST** once after flashing.
 
+### Why the RST button is required (v1.0 board hardware)
+
+This is a **hardware difference in the `HLK-W806-KIT-V1.0` revision**, not a
+software issue. The flash tool's auto-reset (`flash.py reset_device()`) pulses
+the CH340's **DTR/RTS** lines expecting the chip to reboot into the secboot.
+On this board those lines are **not routed to the W806 RESET pin**:
+
+* Measured impedance between **RESET and CH340N pin 4 (RTS#)** is
+  **> 2 MΩ** (effectively open) on the W806-KIT-V1.0.
+* On the boards that auto-reset (w806-nano, hlk-w800-kit, etc.) the same
+  measurement is **< 10 kΩ** (the RTS# → RESET path exists, typically through
+  a ~1 kΩ series resistor).
+* Schematic `HLK-W806-KIT-V1.2.SchDoc` shows the `RESET` net on the
+  **CH340E** symbol — the part that is **DNP** — while the populated CH340N's
+  RTS#/DTR# pins land elsewhere. (So a later board revision or a rework that
+  ties CH340N RTS# to RESET would restore automatic flashing.)
+
+Because `wm.py flash` cannot reboot the chip, it falls back to
+`please reset device`, and the physical **RST** button is the only way to
+restart the chip so the secboot catches the ongoing ESC stream.
+
 ### Why no BOOT is needed
 
 The W806 ROM secboot ("Secboot …" banner) listens on UART0 during its startup
