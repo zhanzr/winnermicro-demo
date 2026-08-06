@@ -13,6 +13,10 @@
 #   ../../build.sh monitor -p COM36       # serial monitor
 #   ../../build.sh clean                  # clean build outputs
 #
+# The command may appear anywhere in the argument list, so these are all
+# equivalent: "build.sh flash -p COM36", "build.sh -p COM36 flash",
+# "build.sh -p COM36 monitor".
+#
 # It also works from inside the project's build/ directory (auto-detected):
 #   cd w806-nano/blink_hello/build && ../../../build.sh build
 #
@@ -64,28 +68,45 @@ export CCACHE_DIR="$TOOL/ccache/cache"
 PY="$TOOL/python/python.exe"
 WM_PY="$SDK/tools/wm/wm.py"
 
-cmd="${1:-build}"
-shift || true
+# Flexible argument parsing: the command (build|flash|...) may appear anywhere
+# in the argument list, and options like -p COM36 may appear before or after
+# it (e.g. "build.sh -p COM36 monitor"). All non-command arguments are
+# forwarded to wm.py in order.
+cmd=""
+declare -a rest=()
+for a in "$@"; do
+    case "$a" in
+        build|clean|distclean|monitor|menuconfig|set-soc|flash|flash-full)
+            cmd="$a"
+            ;;
+        *)
+            rest+=("$a")
+            ;;
+    esac
+done
+if [ -z "$cmd" ]; then
+    cmd="build"
+fi
 
 # Does the user already pass an explicit -n/--name filter?
 has_name=0
-for a in "$@"; do
+for a in "${rest[@]}"; do
     if [ "$a" = "-n" ] || [ "$a" = "--name" ]; then has_name=1; fi
 done
 
 case "$cmd" in
     build|clean|distclean|monitor|menuconfig|set-soc)
-        "$PY" "$WM_PY" "$cmd" "$@"
+        "$PY" "$WM_PY" "$cmd" "${rest[@]}"
         ;;
     flash)
         if [ "$has_name" -eq 1 ]; then
-            "$PY" "$WM_PY" flash "$@"
+            "$PY" "$WM_PY" flash "${rest[@]}"
         else
-            "$PY" "$WM_PY" flash -n app "$@"
+            "$PY" "$WM_PY" flash -n app "${rest[@]}"
         fi
         ;;
     flash-full)
-        "$PY" "$WM_PY" flash "$@"
+        "$PY" "$WM_PY" flash "${rest[@]}"
         ;;
     *)
         echo "usage: $0 <build|flash|flash-full|clean|distclean|monitor|menuconfig> [wm.py args...]" >&2

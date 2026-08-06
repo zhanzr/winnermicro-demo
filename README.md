@@ -13,8 +13,22 @@ projects that run on it.
 |-------|-----------|-----|-----|----------|-------|
 | W800-nano (Air101-nano) | [`w800-nano/`](w800-nano/) | W800 (C-SKY XT804) | up to 240 MHz | none (RF not populated) | 2 MB |
 | HLK-W801-KIT | [`hlk-w801-kit/`](hlk-w801-kit/) | W801 (C-SKY XT804) | up to 240 MHz | WiFi 4 + BLE 4.2 | 2 MB |
+| HLK-W800-KIT | [`hlk-w800-kit/`](hlk-w800-kit/) | W800 (C-SKY XT804) | up to 240 MHz | WiFi 4 + BLE 4.2 | 2 MB |
 | W806-nano (Air103-nano) | [`w806-nano/`](w806-nano/) | W806 / Air103 (C-SKY XT804) | up to 240 MHz | none (no RF) | **1 MB** |
 | HLK-W806-KIT | [`hlk-w806-kit/`](hlk-w806-kit/) | W806-C200 (C-SKY XT804) | up to 240 MHz | none (no RF) | **1 MB** |
+
+## Board images
+
+![W800-nano (Air101-nano)](w800-nano/Air101-Core-Board-V1.0.F.png)
+
+![HLK-W801-KIT](hlk-w801-kit/board_0.png)
+
+![HLK-W800-KIT](hlk-w800-kit/board_0.png)
+![HLK-W800-KIT](hlk-w800-kit/board_1.png)
+
+![W806-nano (Air103-nano)](w806-nano/board_0.png)
+
+![HLK-W806-KIT](hlk-w806-kit/board_0.png)
 
 ## Projects
 
@@ -43,8 +57,8 @@ SDK update. An explicit `-n`/`--name` argument overrides the app-only default.
 See each board's `README.md` for the full manual environment setup and the
 exact COM port / flashing notes.
 
-> Wireless summary: the **HLK-W801-KIT** is the only board with the RF stack
-> populated (use it for Wi-Fi / BLE). The W800-nano, W806-nano and
+> Wireless summary: the **HLK-W801-KIT** and **HLK-W800-KIT** have the RF stack
+> populated (use them for Wi-Fi / BLE). The W800-nano, W806-nano and
 > HLK-W806-KIT are MCU-only. The two W806 boards have only **1 MB flash**, so
 > their projects use a custom partition table (`partition_table_custom.csv`)
 > to fit inside 1 MB.
