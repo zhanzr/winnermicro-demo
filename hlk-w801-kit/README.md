@@ -1,6 +1,6 @@
 # HLK-W801-KIT
 
-The **HLK-W801-KIT** (Hi-Link / æµ·å‡Œç§?W801 development kit) is a full-featured
+The **HLK-W801-KIT** (Hi-Link / æµ·å‡Œï¿½?W801 development kit) is a full-featured
 wireless board built around the **WinnerMicro W801** SoC. Unlike the
 MCU-only Air101/W800-nano, the W801's **Wi-Fi/BLE RF is populated**, and the
 W801 exposes **more GPIOs** (43 I/O) in its larger QFN56 package.
@@ -12,14 +12,14 @@ W801 exposes **more GPIOs** (43 I/O) in its larger QFN56 package.
 | SoC | WinnerMicro W801 (QFN56, 6Ã—6 mm) |
 | CPU | 32-bit C-SKY XT804, up to **240 MHz** (`-mcpu=ck804ef`) |
 | Memory | 2 MB SPI flash, 288 KB RAM |
-| Wireless | **Wi-Fi 4 (802.11 b/g/n) + BLE 4.2 â€?populated** |
+| Wireless | **Wi-Fi 4 (802.11 b/g/n) + BLE 4.2 ï¿½?populated** |
 | GPIOs | 43 (PA0-15, PB0-27 minus PB23) |
 | USB bridge | CH340 (Type-C), **115200 8N1** |
 | Console | UART0 on PB19(TX) / PB20(RX) |
 | Download mode | CH340 DTR/RTS auto-reset into W80x secboot, XMODEM (`wm.py flash`) |
 | LEDs | **7 on-board LEDs, all LOW-active** |
 
-## Memory (RAM) â€?full 288 KB is usable in pure C
+## Memory (RAM) ï¿½?full 288 KB is usable in pure C
 
 Same W80x silicon as the W800: **288 KB RAM** = **160 KB SRAM**
 (`0x20000000`) + **128 KB DRAM** (`0x20028000`), both exposed to the C heap
@@ -28,7 +28,7 @@ in the WM IoT SDK. Measured free heap at boot (blink_hello): `272688
 
 ## Board photo
 
-![HLK-W801-KIT board](board_0.png)
+![HLK-W801-KIT board](board_images/board_0.png)
 
 > **SDK target note:** the WM IoT SDK's chip choice list has `W801` commented
 > out; the 43-GPIO W80x silicon is built with the **`W801S`** config

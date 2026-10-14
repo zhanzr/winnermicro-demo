@@ -7,11 +7,11 @@ so only the MCU peripherals are usable.
 
 ## Board photos
 
-![Air101-Core-Board front](Air101-Core-Board-V1.0.F.png)
+![Air101-Core-Board front](board_images/Air101-Core-Board-V1.0.F.png)
 
-![Air101-Core-Board back](Air101-Core-Board-V1.0.B.png)
+![Air101-Core-Board back](board_images/Air101-Core-Board-V1.0.B.png)
 
-![Air101-Core-Board photo](air101_board_0.png)
+![Air101-Core-Board photo](board_images/air101_board_0.png)
 
 ## Key facts
 
@@ -26,7 +26,7 @@ so only the MCU peripherals are usable.
 | Download mode | CH340 DTR/RTS auto-reset into W800 secboot, XMODEM (`wm.py flash`) |
 | LEDs | 3 on-board LEDs on **PB8 / PB9 / PB10**, **high-active** |
 
-## Memory (RAM) �?full 288 KB is usable in pure C
+## Memory (RAM) �?full 288 KB is usable in pure C
 
 The W800 has **288 KB RAM** = **160 KB SRAM** (`0x20000000`) + **128 KB DRAM**
 (`0x20028000`).
@@ -37,7 +37,7 @@ The W800 has **288 KB RAM** = **160 KB SRAM** (`0x20000000`) + **128 KB DRAM**
 | DRAM | 128 KB | `0x20028000` |
 | **Total** | **288 KB** | |
 
-The LuatOS/Air101 doc says *"Lua 可用内存 176�?32 KB，默�?176 KB"* �?that is the
+The LuatOS/Air101 doc says *"Lua 可用内存 176�?32 KB，默�?176 KB"* �?that is the
 memory LuatOS exposes to the **Lua VM** (the `luat_heap`), after LuatOS
 reserves a large pool for the Lua runtime (VM, GC heap, filesystem, Lua
 state). It is **not** the chip's total RAM and does **not** limit a bare C
@@ -52,7 +52,7 @@ Measured free heap at boot (blink_hello):
 ```
 
 So a pure C application starts with **~266 KB free heap** (~272 KB on the
-w801-kit measured with WiFi off); the remaining ~16�?8 KB is FreeRTOS kernel +
+w801-kit measured with WiFi off); the remaining ~16�?8 KB is FreeRTOS kernel +
 task/ISR stacks + the image's `.data`/`.bss` + heap metadata. With WiFi
 enabled the stack reserves extra buffers (measured ~258 KB free).
 
@@ -69,18 +69,18 @@ enabled the stack reserves extra buffers (measured ~258 KB free).
 | UART0 TX | PB19 | `WM_GPIO_NUM_35` |
 | UART0 RX | PB20 | `WM_GPIO_NUM_36` |
 
-## LED polarity �?verified HIGH-active (important)
+## LED polarity �?verified HIGH-active (important)
 
 The three LEDs are **high-active**: driving the GPIO **high** turns the LED on.
 
 ```
-GPIO ── 5.1kΩ ── LED anode ── LED cathode ── GND      �? HIGH = LED on
+GPIO ── 5.1kΩ ── LED anode ── LED cathode ── GND      �? HIGH = LED on
 ```
 
 Evidence (official schematic `20210910182802476_Air101-Board_v1.0.pdf` and the
 KiCad netlist behind `https://wiki.luatos.org/_static/bom/Air101.html`):
 
-- Netlist, per LED D1/D2/D3: **Pad1 �?`GND`**, **Pad2 �?`Net-(Dx-Pad2)` �?  R (5.1kΩ) �?W800 GPIO** (`/PB_09`, `/PB_10`, `/PB_08`).
+- Netlist, per LED D1/D2/D3: **Pad1 �?`GND`**, **Pad2 �?`Net-(Dx-Pad2)` �?  R (5.1kΩ) �?W800 GPIO** (`/PB_09`, `/PB_10`, `/PB_08`).
 - For a normal LED to conduct, the anode must sit at a higher potential than
   the cathode. With the GND-side pad as the **cathode** and the
   GPIO-through-resistor pad as the **anode**, the LED only conducts when the

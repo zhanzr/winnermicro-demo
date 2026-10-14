@@ -19,16 +19,16 @@ projects that run on it.
 
 ## Board images
 
-![W800-nano (Air101-nano)](w800-nano/Air101-Core-Board-V1.0.F.png)
+![W800-nano (Air101-nano)](w800-nano/board_images/Air101-Core-Board-V1.0.F.png)
 
-![HLK-W801-KIT](hlk-w801-kit/board_0.png)
+![HLK-W801-KIT](hlk-w801-kit/board_images/board_0.png)
 
-![HLK-W800-KIT](hlk-w800-kit/board_0.png)
-![HLK-W800-KIT](hlk-w800-kit/board_1.png)
+![HLK-W800-KIT](hlk-w800-kit/board_images/board_0.png)
+![HLK-W800-KIT](hlk-w800-kit/board_images/board_1.png)
 
-![W806-nano (Air103-nano)](w806-nano/board_0.png)
+![W806-nano (Air103-nano)](w806-nano/board_images/board_0.png)
 
-![HLK-W806-KIT](hlk-w806-kit/board_0.png)
+![HLK-W806-KIT](hlk-w806-kit/board_images/board_0.png)
 
 ## Projects
 

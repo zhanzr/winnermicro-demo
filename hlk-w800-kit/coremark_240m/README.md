@@ -47,6 +47,23 @@ Score (CoreMarks/MHz): 2.75
 | CoreMark 1.0 score | **660.73** |
 | CoreMarks/MHz | **2.75** |
 
+### Alternative flags tested (f4-demo / STM32F411 set, 2026-10-14 A/B)
+
+The sibling repo `f4-demo/nano-f411` builds CoreMark with
+`-Ofast -ffp-contract=fast -funroll-all-loops` (+ hard-float). Flashed to this
+board with that exact set (dropping `-fgcse-sm -finline-limit=500
+-fno-schedule-insns`, since `-ffp-contract=fast` is already the default under
+`-Ofast`/gnu99):
+
+| Flag set | Iterations/Sec |
+|----------|----------------|
+| f4-demo set | 618.24 |
+| repo set (above) | **660.73** (+6.9 %, reproduced exactly) |
+
+The csky extras are worth ~7 % on GCC 6.3.0/ck804ef — keep them. Also from the
+f4-demo findings: LTO adds nothing measurable to CoreMark (+1 %) and must never
+be used on Dhrystone (inflates the score ~2.1× as a compile artifact).
+
 ## Notes
 
 * CPU clock is set to 240 MHz via the project `device_table.toml`

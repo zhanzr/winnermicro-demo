@@ -21,7 +21,7 @@ populated**.
 
 ## Board photo
 
-![HLK-W806-KIT board](board_0.png)
+![HLK-W806-KIT board](board_images/board_0.png)
 
 ## LEDs (LOW-active: GPIO low = LED on)
 

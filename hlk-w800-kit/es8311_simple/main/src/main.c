@@ -15,6 +15,11 @@
  *
  * Wiring: ES8311 CCLK=PA1, CDATA=PA4, MCLK=PA7, I2S_BCK=PB8, I2S_LRCK=PB9,
  * I2S_DOUT=PB10, I2S_DIN=PB11.  ANT8108 nShutdown=PB4 (active low).
+ *
+ * The lite board variant has no ES8311/ANT8108: at startup the codec is
+ * probed via I2C (ACK + chip ID 0x83 0x11 at regs 0xFD/0xFE); if absent the
+ * app prints "audio chip not available" and idles instead of running the
+ * audio loop.
  */
 
 #include <stdio.h>
@@ -37,6 +42,8 @@
 #define AMP_SHDN  WM_GPIO_NUM_20 /* PB4, ANT8108 nShutdown, active low */
 
 #define ES8311_ADDR 0x18 /* 7-bit, CE=0 */
+#define ES8311_REG_CHIP_ID1 0xFD /* chip ID1, reads 0x83 on a real ES8311 */
+#define ES8311_REG_CHIP_ID2 0xFE /* chip ID2, reads 0x11 on a real ES8311 */
 #define WM_I2S_DEV_NAME "i2s"
 
 #define SAMPLE_RATE  16000
@@ -177,6 +184,15 @@ static uint8_t i2c_read_byte(int send_ack)
     return data;
 }
 
+static int i2c_probe(uint8_t addr7)
+{
+    int ret;
+    i2c_start();
+    ret = i2c_write_byte((uint8_t)(addr7 << 1));
+    i2c_stop();
+    return ret;
+}
+
 static int es8311_write(uint8_t reg, uint8_t val)
 {
     int ret;
@@ -219,6 +235,27 @@ static int es8311_update(uint8_t reg, uint8_t mask, uint8_t val)
     }
     cur = (uint8_t)((cur & ~mask) | (val & mask));
     return es8311_write(reg, cur);
+}
+
+/* ACK at 0x18 + valid chip ID = ES8311 really there (lite boards omit it). */
+static int es8311_detect(void)
+{
+    uint8_t id1 = 0, id2 = 0;
+
+    if (i2c_probe(ES8311_ADDR) != 0) {
+        return -1;
+    }
+    if (es8311_read(ES8311_REG_CHIP_ID1, &id1) != 0 ||
+        es8311_read(ES8311_REG_CHIP_ID2, &id2) != 0) {
+        return -1;
+    }
+    if (id1 != 0x83 || id2 != 0x11) {
+        wm_log_warn("device @0x%02x answered but chip ID is 0x%02x 0x%02x "
+                    "(expected 0x83 0x11)", ES8311_ADDR, id1, id2);
+        return -1;
+    }
+    wm_log_info("ES8311 detected @0x%02x (chip ID 0x83 0x11)", ES8311_ADDR);
+    return 0;
 }
 
 /* Ported 1:1 from esp_codec_dev es8311 driver init sequence (slave mode,
@@ -469,10 +506,22 @@ int main(void)
     wm_drv_gpio_data_set(SCL_PIN);
     wm_drv_gpio_data_set(SDA_PIN);
 
-    /* speaker amp enable (ANT8108 /shutdown) */
+    /* speaker amp enable (ANT8108 /shutdown), only driven high below */
     wm_drv_gpio_iomux_func_sel(AMP_SHDN, WM_GPIO_IOMUX_FUN5);
     wm_drv_gpio_set_dir(AMP_SHDN, WM_GPIO_DIR_OUTPUT);
-    wm_drv_gpio_data_set(AMP_SHDN);
+    wm_drv_gpio_data_reset(AMP_SHDN);
+
+    /* audio-feature detection first: lite boards have no ES8311/ANT8108 */
+    if (es8311_detect() != 0) {
+        wm_log_error("audio chip not available @0x%02x (lite board or audio "
+                     "board disconnected) -- audio loop disabled, staying alive",
+                     ES8311_ADDR);
+        while (1) {
+            vTaskDelay(pdMS_TO_TICKS(5000));
+        }
+    }
+
+    wm_drv_gpio_data_set(AMP_SHDN); /* enable ANT8108 speaker amp */
 
     i2s_cfg.mode = WM_I2S_MODE_MASTER;
     i2s_cfg.dir  = WM_I2S_DIR_INOUT;

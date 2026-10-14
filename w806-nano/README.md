@@ -1,7 +1,7 @@
 # W806-nano (Air103-nano)
 
 The **W806-nano** (also sold as the *Air103-nano*) is an **MCU-only** board
-built around the **WinnerMicro W806 / Air103** SoC â€?the 1 MB-flash member of
+built around the **WinnerMicro W806 / Air103** SoC ï¿½?the 1 MB-flash member of
 the W80x family. It has **no wireless** (no Wi-Fi/BLE RF) and the on-board
 **PSRAM is not populated**.
 
@@ -21,11 +21,11 @@ the W80x family. It has **no wireless** (no Wi-Fi/BLE RF) and the on-board
 
 ## Board photos
 
-![W806-nano board](board_0.png)
+![W806-nano board](board_images/board_0.png)
 
-![W806-nano board](board_1.png)
+![W806-nano board](board_images/board_1.png)
 
-![W806-nano board](board_2.png)
+![W806-nano board](board_images/board_2.png)
 
 ## LEDs (HIGH-active: GPIO high = LED on)
 
@@ -36,7 +36,7 @@ the W80x family. It has **no wireless** (no Wi-Fi/BLE RF) and the on-board
 | LED3 | PB26 | `WM_GPIO_NUM_42` |
 
 Verified from the Air103 KiCad netlist (`https://wiki.luatos.org/_static/bom/Air103.html`):
-each LED's Pad1 â†?`GND`, Pad2 â†?resistor â†?W806 GPIO â€?same high-active
+each LED's Pad1 ï¿½?`GND`, Pad2 ï¿½?resistor ï¿½?W806 GPIO ï¿½?same high-active
 arrangement as the Air101/W800-nano.
 
 ```c
@@ -44,7 +44,7 @@ wm_drv_gpio_data_set(pin);   /* LED on  */
 wm_drv_gpio_data_reset(pin); /* LED off */
 ```
 
-## 1 MB flash â€?custom partition table (important)
+## 1 MB flash ï¿½?custom partition table (important)
 
 The W806 has only **1 MB flash**, but the SDK's default partition tables
 assume 2 MB (their `app` partition overflows 1 MB). Booting such an image
@@ -66,8 +66,8 @@ app,             0xF000,    0xE1000,   0x0
 nvs,             0xF0000,   0x8000,    0x0
 ```
 
-This gives the app a **~900 KB** partition (plenty â€?the built apps are
-~75â€?05 KB) and leaves room for a 32 KB NVS region, all within 1 MB.
+This gives the app a **~900 KB** partition (plenty ï¿½?the built apps are
+~75ï¿½?05 KB) and leaves room for a 32 KB NVS region, all within 1 MB.
 
 ## Projects
 
@@ -106,7 +106,7 @@ Score (CoreMarks/MHz): 2.75
 - CH340 USB-UART driver (board console / flashing bridge).
 
 > The older `WM_SDK_W806` (in `D:\board_database\main-air103-w806\`) is the
-> pre-CMake, Makefile-based SDK for the W806. It is **not** needed â€?the
+> pre-CMake, Makefile-based SDK for the W806. It is **not** needed ï¿½?the
 > `wm_iot_sdk` covers the W806 fully (build + flash + the 1 MB partition
 > handling above).
 

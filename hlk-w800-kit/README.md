@@ -3,8 +3,20 @@
 Hi-Link HLK-W800-KIT (W800 SoC, 240 MHz CK804EF). Control board for the W800-KIT-PRO
 audio board (CHT8305C temp/humidity + ES8311 codec + ANT8108 speaker amp).
 
-![HLK-W800-KIT board](board_0.png)
-![HLK-W800-KIT board](board_1.png)
+![HLK-W800-KIT board](board_images/board_0.png)
+![HLK-W800-KIT board](board_images/board_1.png)
+
+## Board variants: normal vs lite
+Two variants exist, otherwise identical. The **lite** version **omits the ES8311
+codec and the ANT8108 speaker amp** (CHT8305C stays). Detection (see the
+`es8311_simple` startup check, verified on a lite board):
+- **ES8311**: bit-bang I2C probe at `0x18` (+ chip ID `0xFD`/`0xFE` = `0x83`/`0x11`).
+  ACK = normal, NACK = lite.
+- **ANT8108**: pure analog amp, no digital interface — **cannot be probed**.
+  Inferred from the ES8311 (the lite board drops both together).
+- **CHT8305C** (`0x40`) ACKs on both variants, so it serves as the bus sanity
+  check: only trust the "lite" verdict when it ACKs (otherwise the audio board
+  may just be disconnected).
 
 ## Board facts
 - **Chip**: W800 silicon -> `CONFIG_BUILD_TYPE_W800=y` in every `prj.config`.
@@ -41,7 +53,7 @@ download mode, so plain `../../build.sh flash -p COM36` works with no buttons.
 | `coremark_240m` | CoreMark benchmark @ 240 MHz. |
 | `wifi_con_test` | Connects to a given 2.4G AP (SSID/PSK in main.c). |
 | `cht8305c_test` | Reads on-board CHT8305C temp/humidity every 1 s via **bit-bang I2C** (PA1=SCL, PA4=SDA, internal pull-ups). Result: temp=38.7 C, humi=58%RH, alert=1. |
-| `es8311_simple` | Audio loop: record ~3 s → play back → 400-2000 Hz sweep. **Working** — ES8311 register init ported from Espressif `esp_codec_dev` es8311 driver (16 kHz, 16-bit, I2S, MCLK 384x). `rx captured 96000/96000` + `tx played 96000` verified over serial. |
+| `es8311_simple` | Audio loop: record ~3 s → play back → 400-2000 Hz sweep. **Working** — ES8311 register init ported from Espressif `esp_codec_dev` es8311 driver (16 kHz, 16-bit, I2S, MCLK 384x). `rx captured 96000/96000` + `tx played 96000` verified over serial. Detects the ES8311 at startup: on a **lite** board (no ES8311/ANT8108) prints `audio chip not available` and idles instead of running the loop. **Verified** on a lite board. |
 
 ## Build
 ```bash

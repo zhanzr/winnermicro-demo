@@ -2,6 +2,11 @@
 
 Audio loop test using the on-board **ES8311** codec + ANT8108 speaker amp.
 
+On startup the codec is **detected** (I2C probe at `0x18` + chip ID
+`0x83 0x11` in regs `0xFD`/`0xFE`): on a **lite** board (no ES8311/ANT8108) it
+prints `audio chip not available ... audio loop disabled` and idles; on a
+normal board it enables the amp (PB4 high) and runs the loop below.
+
 > Build / flash instructions: see the [board README](../README.md).
 
 ## What it does

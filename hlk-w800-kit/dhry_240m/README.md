@@ -72,6 +72,23 @@ DMIPS/MHz:	1.646
 | Dhrystones per second | **694,203** |
 | DMIPS/MHz | **1.646** |
 
+### Why the f4-demo (STM32F411) flag experiments don't apply here
+
+The sibling repo `f4-demo/nano-f411` builds Dhrystone with
+`-Ofast -ffp-contract=fast -funroll-loops` and documents two lessons
+(`f4-demo/nano-f411/app/dhry_100m/LTO_on_dhrystone.md`), both already honored
+by this project:
+
+1. **Never add `-flto`.** Whole-program optimization hoists Dhrystone's
+   loop-invariant work out of the timed loop: +2.1× "score" with identical
+   final values — a compile artifact, not performance. This build is LTO-free.
+2. `-ffp-contract=fast` is a no-op here (already the default under
+   `-Ofast`/gnu99), and `-funroll-loops` is strictly weaker than the
+   `-funroll-all-loops` already used. On CoreMark the full f4-demo set measured
+   **6.9 % slower** than this repo's flag set (618.24 vs 660.73 it/s,
+   2026-10-14, see `../coremark_240m/README.md`), so this project keeps the
+   repo flags.
+
 ## Notes
 
 * CPU clock is set to 240 MHz via the project `device_table.toml`
